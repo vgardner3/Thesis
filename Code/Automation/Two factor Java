@@ -1,0 +1,100 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class UserAuthentication {
+
+    // Simulated user database (in real-world scenario, use a proper database)
+    private static Map<String, Map<String, String>> userDatabase = new HashMap<>();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("1. Register");
+            System.out.println("2. Login");
+            System.out.print("Enter your choice (1 or 2): ");
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    register();
+                    break;
+                case "2":
+                    login();
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter 1 or 2.");
+                    break;
+            }
+
+            System.out.print("Do you want to continue (yes/no)? ");
+            String continueChoice = scanner.nextLine().trim();
+            if (!continueChoice.equalsIgnoreCase("yes")) {
+                break;
+            }
+        }
+
+        System.out.println("Program ended.");
+    }
+
+    public static void register() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine().trim();
+
+        // Check if username already exists
+        if (userDatabase.containsKey(username)) {
+            System.out.println("Username already exists. Please choose another username.");
+            return;
+        }
+
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine().trim();
+
+        System.out.print("Enter your security question: ");
+        String securityQuestion = scanner.nextLine().trim();
+
+        System.out.print("Enter your security answer: ");
+        String securityAnswer = scanner.nextLine().trim();
+
+        // Store user information in database
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("password", password);
+        userInfo.put("security_question", securityQuestion);
+        userInfo.put("security_answer", securityAnswer);
+
+        userDatabase.put(username, userInfo);
+
+        System.out.println("Registration successful!");
+    }
+
+    public static void login() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine().trim();
+
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine().trim();
+
+        // Check if username and password match
+        if (userDatabase.containsKey(username) && userDatabase.get(username).get("password").equals(password)) {
+            String securityQuestion = userDatabase.get(username).get("security_question");
+            String securityAnswer = userDatabase.get(username).get("security_answer");
+
+            System.out.print(securityQuestion + ": ");
+            String userAnswer = scanner.nextLine().trim();
+
+            // Check if security answer matches
+            if (userAnswer.equals(securityAnswer)) {
+                System.out.println("Login successful!");
+            } else {
+                System.out.println("Incorrect answer to security question. Login failed.");
+            }
+        } else {
+            System.out.println("Invalid username or password. Login failed.");
+        }
+    }
+}

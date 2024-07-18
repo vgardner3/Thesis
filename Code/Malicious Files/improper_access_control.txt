@@ -1,0 +1,12 @@
+# Vulnerable File Access Example
+def read_sensitive_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            content = file.read()
+            print(f"Content of {filename}: {content}")
+    except FileNotFoundError:
+        print(f"File '{filename}' not found.")
+
+# User input (vulnerable to improper access control)
+user_file = input("Enter a filename to read: ")
+read_sensitive_file(user_file)

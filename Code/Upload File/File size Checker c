@@ -1,0 +1,39 @@
+// file_size_checker.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+
+long get_file_size(const char *file_path) {
+    struct stat st;
+    if (stat(file_path, &st) == 0)
+        return st.st_size;
+    return -1;
+}
+
+int main() {
+    char file_path[256];
+
+    printf("Welcome to the File Size Checker!\n");
+
+    printf("Enter the path to the uploaded file: ");
+    if (fgets(file_path, sizeof(file_path), stdin) == NULL) {
+        printf("Error reading input.\n");
+        return 1;
+    }
+
+    // Remove newline character from fgets input
+    file_path[strcspn(file_path, "\n")] = 0;
+
+    if (access(file_path, F_OK) != -1) {
+        long file_size = get_file_size(file_path);
+        if (file_size != -1) {
+            printf("The size of the uploaded file is: %ld bytes\n", file_size);
+        } else {
+            printf("Could not determine the size of the file.\n");
+        }
+    } else {
+        printf("The specified file does not exist.\n");
+    }
+
+    return 0;
+}

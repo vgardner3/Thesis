@@ -1,0 +1,26 @@
+// SimpleUI.java
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class SimpleUI {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Simple UI");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel label = new JLabel("Hello, World!");
+        frame.getContentPane().add(label, "North");
+
+        JButton button = new JButton("Click Me");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Button clicked!");
+            }
+        });
+        frame.getContentPane().add(button, "South");
+
+        frame.setVisible(true);
+    }
+}

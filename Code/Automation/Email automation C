@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+// Function prototypes
+void sendEmail();
+void registerUser();
+
+int main() {
+    sendEmail();
+    registerUser();
+    return 0;
+}
+
+void sendEmail() {
+    // Simulated email sending
+    char sender_email[] = "your_email@example.com";
+    char receiver_email[] = "recipient_email@example.com";
+    char subject[] = "Automated Email Notification";
+    char body[] = "Hello,\n\nThis is an automated email sent using C.\n\nRegards,\n[Your Name]";
+
+    // Printing the email details (simulated send operation)
+    printf("Sending email...\n");
+    printf("From: %s\n", sender_email);
+    printf("To: %s\n", receiver_email);
+    printf("Subject: %s\n", subject);
+    printf("Body:\n%s\n", body);
+    printf("Email sent successfully!\n");
+}
+
+void registerUser() {
+    // Simulated user registration (using console input)
+    char username[100];
+    char password[100];
+    char security_question[100];
+    char security_answer[100];
+
+    printf("Enter your username: ");
+    scanf("%s", username);
+
+    printf("Enter your password: ");
+    scanf("%s", password);
+
+    printf("Enter your security question: ");
+    scanf("%s", security_question);
+
+    printf("Enter your security answer: ");
+    scanf("%s", security_answer);
+
+    // Simulated storage (writing to a file)
+    FILE *fp;
+    fp = fopen("user_database.txt", "a");
+    if (fp == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    fprintf(fp, "Username: %s\nPassword: %s\nSecurity Question: %s\nSecurity Answer: %s\n\n", username, password, security_question, security_answer);
+    fclose(fp);
+
+    printf("Registration successful!\n");
+}

@@ -1,0 +1,13 @@
+def main():
+    n = int(input("Enter number of elements: "))
+
+    try:
+        ptr = [0] * n
+        print("Memory successfully allocated using list.")
+        # Use ptr to store data
+    except MemoryError:
+        print("Memory not allocated.")
+        exit(0)
+
+if __name__ == "__main__":
+    main()

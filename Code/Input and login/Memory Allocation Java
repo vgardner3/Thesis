@@ -1,0 +1,20 @@
+// MemoryAllocation.java
+import java.util.Scanner;
+
+public class MemoryAllocation {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter number of elements: ");
+        int n = scanner.nextInt();
+
+        try {
+            int[] ptr = new int[n];
+            System.out.println("Memory successfully allocated using array.");
+            // Use ptr to store data
+        } catch (OutOfMemoryError e) {
+            System.out.println("Memory not allocated.");
+            System.exit(0);
+        }
+    }
+}

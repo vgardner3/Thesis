@@ -1,0 +1,61 @@
+// login_page.c
+#include <gtk/gtk.h>
+#include <string.h>
+#include <ctype.h>
+
+GtkWidget *username_entry, *password_entry, *message_label;
+
+gboolean validate_inputs(const char *username, const char *password) {
+    if (strlen(username) == 0 || strlen(password) == 0) {
+        return FALSE;
+    }
+
+    for (int i = 0; i < strlen(username); i++) {
+        if (!isalnum(username[i])) {
+            return FALSE;
+        }
+    }
+
+    if (strlen(password) < 6) {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+void on_login_button_clicked(GtkWidget *widget, gpointer data) {
+    const char *username = gtk_entry_get_text(GTK_ENTRY(username_entry));
+    const char *password = gtk_entry_get_text(GTK_ENTRY(password_entry));
+
+    if (validate_inputs(username, password)) {
+        gtk_label_set_text(GTK_LABEL(message_label), "Login successful!");
+        gtk_widget_override_color(message_label, GTK_STATE_FLAG_NORMAL, gdk_rgba_parse("green", "green"));
+    } else {
+        gtk_label_set_text(GTK_LABEL(message_label), "Invalid input. Please try again.");
+        gtk_widget_override_color(message_label, GTK_STATE_FLAG_NORMAL, gdk_rgba_parse("red", "red"));
+    }
+}
+
+int main(int argc, char *argv[]) {
+    gtk_init(&argc, &argv);
+
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Login Page");
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 200);
+    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    GtkWidget *grid = gtk_grid_new();
+    gtk_container_add(GTK_CONTAINER(window), grid);
+
+    GtkWidget *username_label = gtk_label_new("Username:");
+    gtk_grid_attach(GTK_GRID(grid), username_label, 0, 0, 1, 1);
+
+    username_entry = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), username_entry, 1, 0, 1, 1);
+
+    GtkWidget *password_label = gtk_label_new("Password:");
+    gtk_grid_attach(GTK_GRID(grid), password_label, 0, 1, 1, 1);
+
+    password_entry = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(password_entry), FALSE);
+    gtk_grid_attach(GTK_GRID(grid), password_entry, 1, 1, 1,

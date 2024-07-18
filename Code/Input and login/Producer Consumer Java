@@ -1,0 +1,63 @@
+// ProducerConsumer.java
+import java.util.concurrent.Semaphore;
+
+public class ProducerConsumer {
+    private static final int BUFF_SIZE = 4;
+    private static final char[] buffer = new char[BUFF_SIZE];
+    private static int nextIn = 0;
+    private static int nextOut = 0;
+
+    private static final Semaphore emptySemMutex = new Semaphore(1); // producer semaphore
+    private static final Semaphore fullSemMutex = new Semaphore(0);  // consumer semaphore
+
+    public static void main(String[] args) {
+        Thread producerThread = new Thread(new Producer());
+        Thread consumerThread = new Thread(new Consumer());
+
+        producerThread.start();
+        consumerThread.start();
+
+        try {
+            producerThread.join();
+            consumerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static class Producer implements Runnable {
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                Put((char) ('A' + i % 26));
+            }
+        }
+
+        private void Put(char item) {
+            try {
+                emptySemMutex.acquire(); // get the mutex to fill the buffer
+                buffer[nextIn] = item;
+                nextIn = (nextIn + 1) % BUFF_SIZE;
+                System.out.printf("Producing %c ...nextIn %d..Ascii=%d%n", item, nextIn, (int) item);
+                if (nextIn == 0) {
+                    fullSemMutex.release();
+                    Thread.sleep(1000);
+                }
+                emptySemMutex.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static class Consumer implements Runnable {
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                Get();
+            }
+        }
+
+        private void Get() {
+            try {
+                fullSemMutex.acquire(); // gain the mutex to consume from buffer
+                char item = buffer[nextOut];
+                nextOut =

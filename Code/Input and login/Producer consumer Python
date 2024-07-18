@@ -1,0 +1,52 @@
+import threading
+import time
+
+BUFF_SIZE = 4
+FULL = 0
+EMPTY = 0
+
+buffer = [None] * BUFF_SIZE
+nextIn = 0
+nextOut = 0
+
+empty_sem_mutex = threading.Semaphore(1)  # producer semaphore
+full_sem_mutex = threading.Semaphore(0)  # consumer semaphore
+
+def put(item):
+    global nextIn
+    empty_sem_mutex.acquire()  # get the mutex to fill the buffer
+    buffer[nextIn] = item
+    nextIn = (nextIn + 1) % BUFF_SIZE
+    print(f"Producing {item} ...nextIn {nextIn}..Ascii={ord(item)}")
+    if nextIn == FULL:
+        full_sem_mutex.release()
+        time.sleep(1)
+    empty_sem_mutex.release()
+
+def producer():
+    for i in range(10):
+        put(chr(ord('A') + i % 26))
+
+def get():
+    global nextOut
+    full_sem_mutex.acquire()  # gain the mutex to consume from buffer
+    item = buffer[nextOut]
+    nextOut = (nextOut + 1) % BUFF_SIZE
+    print(f"\t...Consuming {item} ...nextOut {nextOut}..Ascii={ord(item)}")
+    if nextOut == EMPTY:
+        time.sleep(1)
+    full_sem_mutex.release()
+
+def consumer():
+    for i in range(10):
+        get()
+
+if __name__ == "__main__":
+    producer_thread = threading.Thread(target=producer)
+    consumer_thread = threading.Thread(target=consumer)
+
+    producer_thread.start()
+    consumer_thread.start()
+
+    producer_thread.join()
+    consumer_thread.join()
